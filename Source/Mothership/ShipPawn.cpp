@@ -1,0 +1,199 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#include "Mothership.h"
+#include "ShipPawn.h"
+
+#include "Engine.h"
+
+
+// Sets default values
+AShipPawn::AShipPawn() :
+	ForwardThrust(200.f),
+	ReverseThrust(150.f),
+	Friction(50.f),
+	MaxSpeed(2000.f),
+	TurnRate(900.f),
+	CameraPitch(-40.f),
+	MaxRollInCorners(90.f),
+	RollRate(180.f),
+	RotationStabilizerStrength(90.f),
+	LinearStabilizerStrength(1600.f)
+{
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	SetActorEnableCollision(true);
+}
+
+// Called when the game starts or when spawned
+void AShipPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if(CameraArm)
+	{
+		CameraArm->bAbsoluteRotation = true;
+	}
+}
+
+// Called every frame
+void AShipPawn::Tick( float DeltaTime )
+{
+	Super::Tick( DeltaTime );
+	
+	MovementTick(DeltaTime);
+}
+
+void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
+	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
+{
+	Super::ReceiveHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if(Mesh)
+	{
+		static FTimerHandle TimerHandle;
+
+		DriftVelocity = Mesh->GetPhysicsLinearVelocity();
+		DriftVelocity.Z = 0;
+		Speed = 0.f;
+
+		if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 10, FColor::White, "Crash! " + Mesh->GetPhysicsLinearVelocity().ToString());
+	}
+}
+
+void AShipPawn::SetThrottleControl(float Throttle)
+{
+	ThrottleControl = Throttle;
+}
+
+inline float AShipPawn::GetThrottleControl() const
+{
+	return ThrottleControl;
+}
+
+void AShipPawn::SetDirectionControl(float Direction)
+{
+	DirectionControl = Direction;
+}
+
+inline float AShipPawn::GetDirectionControl() const
+{
+	return DirectionControl;
+}
+
+void AShipPawn::MovementTick(float DeltaSeconds)
+{
+	// The Mesh component controls the physical direction of Travel
+	if(Mesh)
+	{
+		RotationTick(DeltaSeconds);
+
+		// Linear movement
+		if(ThrottleControl > 0.f)
+		{
+			Speed = FMath::Min(Speed + ForwardThrust * DeltaSeconds, MaxSpeed);
+		}
+		else if(ThrottleControl < 0.f)
+		{
+			Speed = FMath::Max(Speed - ReverseThrust * DeltaSeconds, -MaxSpeed);
+		}
+		else if(Speed != 0)
+		{
+			Speed = DampenFloat(Speed, Friction * DeltaSeconds);
+		}
+
+		// Ship always flies in the direciton it's facing (because... why not? We're arcade!)
+		FVector Forward = Mesh->GetForwardVector();
+		Forward.Z = 0.f;	// Safety feature... If ship gets hit it won't drift of in the Z axis
+		Mesh->SetPhysicsLinearVelocity(Forward * Speed + DriftVelocity);
+
+		// If the ship hits another object it might spin out of control -> dampen
+		StabilizerTick(DeltaSeconds);
+		
+		// Adjust the direction the camera is facing
+		if(CameraArm)
+		{
+			FRotator Rotator = Mesh->GetRelativeTransform().GetRotation().Rotator();
+			Rotator.Roll = 0.f;
+			Rotator.Pitch = CameraPitch;
+			CameraArm->SetRelativeRotation(Rotator);
+		}
+	}
+}
+
+void AShipPawn::RotationTick(float DeltaSeconds)
+{
+	if(RollCurve && TurnRateCurve && Mesh)
+	{
+		FRotator Rotator = Mesh->GetRelativeTransform().GetRotation().Rotator();
+
+		float SpeedFraction = FMath::Abs(Speed) / MaxSpeed;
+		float MaxRoll = MaxRollInCorners * RollCurve->GetFloatValue(SpeedFraction);
+		float CurRoll = Rotator.Roll;
+
+		if(DirectionControl != 0.f)
+		{
+			// User steers -> Roll into the corner
+			CurRoll += DirectionControl * RollRate * DeltaSeconds;
+		}
+		else if(CurRoll != 0.f)
+		{
+			// User stopped steering, bring the baby back into straight flight!
+			CurRoll = DampenFloat(CurRoll, RollRate * DeltaSeconds);
+		}
+
+		// Cap Rolling at the maximum allowed values 
+		CurRoll = FMath::Sign(CurRoll) * FMath::Min(MaxRoll, FMath::Abs(CurRoll));
+
+		Rotator.Roll = CurRoll;
+
+		// How much of the current maximum Roll are we rolling?
+		float RollFraction = MaxRoll > 0.f ? CurRoll / MaxRoll : 0.f;
+
+		// Actually turn the ship
+		Rotator.Yaw += RollFraction * TurnRateCurve->GetFloatValue(SpeedFraction) * TurnRate * DeltaSeconds;
+
+		// 2.5D game -> We definitely can't pitch
+		Rotator.Pitch = 0.f;
+
+		Mesh->SetRelativeRotation(Rotator, true);
+	}
+}
+
+void AShipPawn::StabilizerTick(float DeltaSeconds)
+{
+	// Stop any external rotation
+	FVector AngularVelocity = Mesh->GetPhysicsAngularVelocity();
+	if(AngularVelocity != FVector::ZeroVector)
+	{
+		if(AngularVelocity.X != 0.f)
+			AngularVelocity.X = DampenFloat(AngularVelocity.X, RotationStabilizerStrength * DeltaSeconds * 10.f);
+		if(AngularVelocity.Y != 0.f)
+			AngularVelocity.Y = DampenFloat(AngularVelocity.Y, RotationStabilizerStrength * DeltaSeconds * 10.f);
+		if(AngularVelocity.Z != 0.f)
+			AngularVelocity.Z = DampenFloat(AngularVelocity.Z, RotationStabilizerStrength * DeltaSeconds * 10.f);
+	}
+	Mesh->SetPhysicsAngularVelocity(AngularVelocity);
+
+	// Stop uncontrolled linear movement
+	if(DriftVelocity != FVector::ZeroVector)
+	{
+		if(DriftVelocity.X != 0.f)
+			DriftVelocity.X = DampenFloat(DriftVelocity.X, LinearStabilizerStrength * DeltaSeconds);
+		if(DriftVelocity.Y != 0.f)
+			DriftVelocity.Y = DampenFloat(DriftVelocity.Y, LinearStabilizerStrength * DeltaSeconds);
+		if(DriftVelocity.Z != 0.f)
+			DriftVelocity.Z = DampenFloat(DriftVelocity.Z, LinearStabilizerStrength * DeltaSeconds);
+	}
+
+	// We're a 2.5D game, so no movement on Z axis allowed.
+	FVector Location = Mesh->GetRelativeTransform().GetLocation();
+	Location.Z = 0.f;
+	Mesh->SetRelativeLocation(Location);
+}
+
+FORCEINLINE float AShipPawn::DampenFloat(float Value, float Force)
+{
+	float Delta = FMath::Min(Force, FMath::Abs(Value));
+	return Value - FMath::Sign(Value) * Delta;
+}

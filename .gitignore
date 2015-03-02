@@ -1,0 +1,14 @@
+Binaries/**
+Build/**
+Intermediate/**
+Saved/**
+
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+*.opensdf
+*.sdf
+*.cachefile
