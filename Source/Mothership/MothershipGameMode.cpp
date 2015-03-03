@@ -4,7 +4,6 @@
 #include "MothershipGameMode.h"
 #include "ShipPawn.h"
 #include "PlayerShipController.h"
-#include "MothershipPlayerController.h"
 
 AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

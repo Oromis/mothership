@@ -2,6 +2,9 @@
 
 #include "Mothership.h"
 #include "ShipPawn.h"
+#include "HealthComponent.h"
+#include "DamageType/CrashDamage.h"
+#include "Helper/Utilities.h"
 
 #include "Engine.h"
 
@@ -21,8 +24,9 @@ AShipPawn::AShipPawn() :
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 	SetActorEnableCollision(true);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 }
 
 // Called when the game starts or when spawned
@@ -51,13 +55,53 @@ void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimit
 
 	if(Mesh)
 	{
-		static FTimerHandle TimerHandle;
+		// Damage the ship
+		if(Other)
+		{
+			float DamageScale = 1.f;
+			if(OtherComp && OtherComp->GetMass() != 0.f && Mesh->GetMass() != 0.f)
+			{
+				DamageScale = OtherComp->GetMass() / Mesh->GetMass();
+			}
+			TakeDamage(Speed / 100.f * DamageScale, 
+				FDamageEvent(TSubclassOf<UDamageType>(UCrashDamage::StaticClass())), 
+				Other->GetInstigatorController(), 
+				Other);
+		}
 
+		// Drift off
 		DriftVelocity = Mesh->GetPhysicsLinearVelocity();
 		DriftVelocity.Z = 0;
 		Speed = 0.f;
+	}
+}
 
-		if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 10, FColor::White, "Crash! " + Mesh->GetPhysicsLinearVelocity().ToString());
+float AShipPawn::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	DebugMessage("Taking Damage: " + FString::SanitizeFloat(DamageAmount));
+	if(HealthComponent)
+	{
+		return HealthComponent->TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	}
+	else
+	{
+		// No Health -> No Damage
+		return 0.f;
+	}
+}
+
+void AShipPawn::OnDestroy(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if(OnDestroyEvent.IsBound())
+	{
+		// Call listeners for this event (Probably a blueprint script)
+		OnDestroyEvent.Broadcast(DamageEvent.DamageTypeClass.GetDefaultObject(), EventInstigator, DamageCauser);
+	}
+	else
+	{
+		// No listeners? What a pity, just delete this actor!
+		this->Destroy();
 	}
 }
 

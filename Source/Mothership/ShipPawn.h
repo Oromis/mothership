@@ -3,13 +3,17 @@
 #pragma once
 
 #include "GameFramework/Pawn.h"
+#include "Destructible.h"
 #include "ShipPawn.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDestroyDelegate, UDamageType*, DamageType, AController*, DamageInstigator, AActor*, DamageCauser);
+
+class UHealthComponent;
+
 UCLASS()
-class MOTHERSHIP_API AShipPawn : public APawn
+class MOTHERSHIP_API AShipPawn : public APawn, public IDestructible
 {
 	GENERATED_BODY()
-
 public:
 	// Sets default values for this pawn's properties
 	AShipPawn();
@@ -23,11 +27,20 @@ public:
 	virtual void ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, 
 		bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse,	const FHitResult & Hit) override;
 
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, 
+		AActor * DamageCauser) override;
+
 	void SetThrottleControl(float Throttle);
 	float GetThrottleControl() const;
 
 	void SetDirectionControl(float Direction);
 	float GetDirectionControl() const;
+
+	/// Called when the ship dies
+	virtual void OnDestroy(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UPROPERTY(BlueprintAssignable, Category = Mechanics)
+	FOnDestroyDelegate OnDestroyEvent;
 
 protected:
 
@@ -49,6 +62,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mechanics, meta = (AllowPrivateAccess = "true"))
+	UHealthComponent* HealthComponent;
 
 	/// Curve defining the roll behavior by current speed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
