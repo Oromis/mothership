@@ -17,4 +17,11 @@ AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitial
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	this->bStartPlayersAsSpectators = true;
+}
+
+UClass* AMothershipGameMode::GetDefaultPawnClassForController(AController* InController)
+{
+	return DefaultPawnClass;
 }

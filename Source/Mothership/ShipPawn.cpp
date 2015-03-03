@@ -63,7 +63,7 @@ void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimit
 			{
 				DamageScale = OtherComp->GetMass() / Mesh->GetMass();
 			}
-			TakeDamage(Speed / 100.f * DamageScale, 
+			TakeDamage(FMath::Abs(Speed) / 100.f * DamageScale, 
 				FDamageEvent(TSubclassOf<UDamageType>(UCrashDamage::StaticClass())), 
 				Other->GetInstigatorController(), 
 				Other);
@@ -178,7 +178,12 @@ void AShipPawn::RotationTick(float DeltaSeconds)
 		if(DirectionControl != 0.f)
 		{
 			// User steers -> Roll into the corner
-			CurRoll += DirectionControl * RollRate * DeltaSeconds;
+			float Factor = 1.f;
+			if(Speed < 0)
+			{
+				Factor = -1.f;
+			}
+			CurRoll += DirectionControl * RollRate * DeltaSeconds * Factor;
 		}
 		else if(CurRoll != 0.f)
 		{
@@ -193,6 +198,11 @@ void AShipPawn::RotationTick(float DeltaSeconds)
 
 		// How much of the current maximum Roll are we rolling?
 		float RollFraction = MaxRoll > 0.f ? CurRoll / MaxRoll : 0.f;
+
+		if(Speed < 0)
+		{
+			RollFraction *= -1.f;
+		}
 
 		// Actually turn the ship
 		Rotator.Yaw += RollFraction * TurnRateCurve->GetFloatValue(SpeedFraction) * TurnRate * DeltaSeconds;

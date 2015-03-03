@@ -38,4 +38,10 @@ protected:
 
 	UPROPERTY()
 	AShipPawn* Ship = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Mechanics)
+	float RespawnTime = 5.f;
+
+private:
+	FTimerHandle RespawnTimerHandle;
 };

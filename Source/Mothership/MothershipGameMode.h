@@ -10,6 +10,8 @@ class AMothershipGameMode : public AGameMode
 
 public:
 	AMothershipGameMode(const FObjectInitializer& ObjectInitializer);
+
+	virtual UClass* GetDefaultPawnClassForController(AController* InController) override;
 };
 
 
