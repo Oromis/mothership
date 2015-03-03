@@ -40,3 +40,22 @@ void APlayerShipController::OnDirectionInput(float Value)
 		Ship->SetDirectionControl(Value);
 	}
 }
+
+void APlayerShipController::PawnPendingDestroy(APawn* Pawn)
+{
+	if(Ship == Pawn)
+	{
+		FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
+		FRotator CameraRotation = PlayerCameraManager->GetCameraRotation();
+
+		Super::PawnPendingDestroy(Pawn);
+
+		ClientSetSpectatorCamera(CameraLocation, CameraRotation);
+	}
+}
+
+void APlayerShipController::ClientSetSpectatorCamera_Implementation(FVector CameraLocation, FRotator CameraRotation)
+{
+	this->SetInitialLocationAndRotation(CameraLocation, CameraRotation);
+	this->SetViewTarget(this);
+}
