@@ -36,7 +36,7 @@ protected:
 	UFUNCTION(Reliable, Client)
 	void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Owner)
 	AShipPawn* Ship = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Mechanics)

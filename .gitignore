@@ -2,11 +2,14 @@ Binaries/Win64/*.pdb
 Intermediate/Build/**
 Saved/**
 
+
+
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 *.userprefs
+*.filters
 
 *.opensdf
 *.sdf
