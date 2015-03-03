@@ -1,111 +1,106 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <None Include="..\..\Mothership.uproject" />
-    <Filter Include="Source">
-      <UniqueIdentifier>{9DEEA9A3-F1C5-4132-99DF-5C365647AC33}</UniqueIdentifier>
-    </Filter>
-    <None Include="..\..\Source\Mothership.Target.cs">
-      <Filter>Source</Filter>
-    </None>
-    <None Include="..\..\Source\MothershipEditor.Target.cs">
-      <Filter>Source</Filter>
-    </None>
-    <Filter Include="Config">
-      <UniqueIdentifier>{F7E53A45-6861-460B-A277-DF7D086F326E}</UniqueIdentifier>
-    </Filter>
-    <None Include="..\..\Config\DefaultEditor.ini">
-      <Filter>Config</Filter>
-    </None>
-    <None Include="..\..\Config\DefaultEditorUserSettings.ini">
-      <Filter>Config</Filter>
-    </None>
-    <None Include="..\..\Config\DefaultEngine.ini">
-      <Filter>Config</Filter>
-    </None>
-    <None Include="..\..\Config\DefaultGame.ini">
-      <Filter>Config</Filter>
-    </None>
-    <None Include="..\..\Config\DefaultInput.ini">
-      <Filter>Config</Filter>
-    </None>
-    <Filter Include="Source\Mothership">
-      <UniqueIdentifier>{AFD5A534-D8B9-4517-9ECD-F2754C0BFD89}</UniqueIdentifier>
-    </Filter>
-    <None Include="..\..\Source\Mothership\Mothership.Build.cs">
-      <Filter>Source\Mothership</Filter>
-    </None>
-    <ClCompile Include="..\..\Source\Mothership\Mothership.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Mothership\Mothership.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\Mothership\MothershipGameMode.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\Mothership\MothershipGameMode.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <Filter Include="Source\Mothership\Resources">
-      <UniqueIdentifier>{DC80D310-45CD-4353-9725-B5507B2E9269}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Mothership\Resources\Windows">
-      <UniqueIdentifier>{D34F38D7-FF16-4644-9735-03D485782963}</UniqueIdentifier>
-    </Filter>
-    <ResourceCompile Include="..\..\Source\Mothership\Resources\Windows\Mothership.rc">
-      <Filter>Source\Mothership\Resources\Windows</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Source\Mothership\ShipPawn.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Mothership\PlayerShipController.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Mothership\RaceMode.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Mothership\HealthComponent.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Mothership\Destructible.h">
-      <Filter>Source\Mothership</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Mothership\DamageType\CrashDamage.h">
-      <Filter>Source\Mothership\DamageType</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Mothership\Helper\Utilities.h">
-      <Filter>Source\Mothership\Utilities</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\Source\Mothership\ShipPawn.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Mothership\PlayerShipController.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Mothership\RaceMode.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Mothership\HealthComponent.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Mothership\Destructible.cpp">
-      <Filter>Source\Mothership</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Mothership\DamageType\CrashDamage.cpp">
-      <Filter>Source\Mothership\DamageType</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Source\Mothership\DamageType">
-      <UniqueIdentifier>{7a00ae41-b119-4302-bdc3-7d1815846fbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Mothership\Utilities">
-      <UniqueIdentifier>{11d67292-b3d4-4170-87a1-76e9f5134667}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\Mothership.uproject" />
+		<Filter Include="Source">
+			<UniqueIdentifier>{45671B6A-499F-4A99-AAD8-9F4DF91C8106}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Source\Mothership.Target.cs">
+			<Filter>Source</Filter>
+		</None >
+		<None Include="..\..\Source\MothershipEditor.Target.cs">
+			<Filter>Source</Filter>
+		</None >
+		<Filter Include="Config">
+			<UniqueIdentifier>{D554588A-F592-49F3-9F2D-20CEA3557838}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Config\DefaultEditor.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultEditorUserSettings.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultEngine.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultGame.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultInput.ini">
+			<Filter>Config</Filter>
+		</None >
+		<Filter Include="Source\Mothership">
+			<UniqueIdentifier>{D08E4B66-917B-4E29-9DA6-4094566A2E59}</UniqueIdentifier>
+		</Filter>
+		<ClCompile Include="..\..\Source\Mothership\Destructible.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\Destructible.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\Mothership\HealthComponent.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\HealthComponent.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<None Include="..\..\Source\Mothership\Mothership.Build.cs">
+			<Filter>Source\Mothership</Filter>
+		</None >
+		<ClCompile Include="..\..\Source\Mothership\Mothership.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\Mothership.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\Mothership\MothershipGameMode.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\MothershipGameMode.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\Mothership\PlayerShipController.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\PlayerShipController.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\Mothership\RaceMode.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\RaceMode.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\Mothership\ShipPawn.cpp">
+			<Filter>Source\Mothership</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\ShipPawn.h">
+			<Filter>Source\Mothership</Filter>
+		</ClInclude >
+		<Filter Include="Source\Mothership\DamageType">
+			<UniqueIdentifier>{392E93F2-33DD-4482-A7A6-2D678835F7B6}</UniqueIdentifier>
+		</Filter>
+		<ClCompile Include="..\..\Source\Mothership\DamageType\CrashDamage.cpp">
+			<Filter>Source\Mothership\DamageType</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\Mothership\DamageType\CrashDamage.h">
+			<Filter>Source\Mothership\DamageType</Filter>
+		</ClInclude >
+		<Filter Include="Source\Mothership\Helper">
+			<UniqueIdentifier>{FD4A1220-DE7C-4001-8C31-27889BF4585D}</UniqueIdentifier>
+		</Filter>
+		<ClInclude Include="..\..\Source\Mothership\Helper\Utilities.h">
+			<Filter>Source\Mothership\Helper</Filter>
+		</ClInclude >
+		<Filter Include="Source\Mothership\Resources">
+			<UniqueIdentifier>{1E6562B4-663C-4C43-8B45-8FFF34760779}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="Source\Mothership\Resources\Windows">
+			<UniqueIdentifier>{937B81A9-5E5B-42EA-939F-94B599F22BB5}</UniqueIdentifier>
+		</Filter>
+		<ResourceCompile Include="..\..\Source\Mothership\Resources\Windows\Mothership.rc">
+			<Filter>Source\Mothership\Resources\Windows</Filter>
+		</ResourceCompile >
+	</ItemGroup>
 </Project>

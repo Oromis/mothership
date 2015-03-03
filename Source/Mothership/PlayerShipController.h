@@ -27,6 +27,6 @@ protected:
 	void OnThrottleInput(float Value);
 	void OnDirectionInput(float Value);
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Owner)
 	AShipPawn* Ship = nullptr;
 };
