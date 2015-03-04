@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{3A70A3E2-EAD4-4DDC-BC5F-EB64FCB29C83}"
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{E552F21B-9B7B-402C-B073-A46E6096764F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{F4FE6DF9-FF23-4962-BB24-64F6A4308205}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{84958C96-EFF0-4653-9963-0391633B5BF4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mothership", "Intermediate\ProjectFiles\Mothership.vcxproj", "{A254054E-8B12-4A7F-BBA4-943246EEA8C5}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4", "Intermediate\ProjectFiles\UE4.vcxproj", "{29AA5D54-7718-4F77-AC55-52390A36BEA8}"
 EndProject
@@ -30,12 +30,17 @@ Global
 		{A254054E-8B12-4A7F-BBA4-943246EEA8C5}.Development|Windows.Build.0 = Development_Game|x64
 		{A254054E-8B12-4A7F-BBA4-943246EEA8C5}.Shipping|Windows.ActiveCfg = Shipping_Game|Win32
 		{A254054E-8B12-4A7F-BBA4-943246EEA8C5}.Shipping|Windows.Build.0 = Shipping_Game|Win32
+		{29AA5D54-7718-4F77-AC55-52390A36BEA8}.DebugGame Editor|Windows.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{29AA5D54-7718-4F77-AC55-52390A36BEA8}.DebugGame|Windows.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{29AA5D54-7718-4F77-AC55-52390A36BEA8}.Development Editor|Windows.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{29AA5D54-7718-4F77-AC55-52390A36BEA8}.Development|Windows.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{29AA5D54-7718-4F77-AC55-52390A36BEA8}.Shipping|Windows.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{29AA5D54-7718-4F77-AC55-52390A36BEA8} = {3A70A3E2-EAD4-4DDC-BC5F-EB64FCB29C83}
-		{A254054E-8B12-4A7F-BBA4-943246EEA8C5} = {F4FE6DF9-FF23-4962-BB24-64F6A4308205}
+		{A254054E-8B12-4A7F-BBA4-943246EEA8C5} = {84958C96-EFF0-4653-9963-0391633B5BF4}
+		{29AA5D54-7718-4F77-AC55-52390A36BEA8} = {E552F21B-9B7B-402C-B073-A46E6096764F}
 	EndGlobalSection
 EndGlobal

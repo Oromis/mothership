@@ -5,6 +5,7 @@
 #include "HealthComponent.h"
 #include "DamageType/CrashDamage.h"
 #include "Helper/Utilities.h"
+#include "MothershipGameMode.h"
 
 #include "Engine.h"
 
@@ -103,6 +104,9 @@ void AShipPawn::OnDestroy(const FDamageEvent& DamageEvent, AController* EventIns
 		// No listeners? What a pity, just delete this actor!
 		this->Destroy();
 	}
+
+	// Tell the game about this incident
+	GetWorld()->GetAuthGameMode<AMothershipGameMode>()->OnKill(EventInstigator, this->Controller, this);
 }
 
 void AShipPawn::SetThrottleControl(float Throttle)

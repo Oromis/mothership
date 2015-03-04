@@ -1,9 +1,11 @@
 Binaries/Win64/*.pdb
-Intermediate/Build/**
+Binaries/Win64/*.dll
+Intermediate/**
 Saved/**
 
+!Binaries/Win64/UE4Editor-Mothership.dll
 
-
+*.sln
 *.suo
 *.user
 *.userosscache

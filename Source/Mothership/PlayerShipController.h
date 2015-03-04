@@ -6,6 +6,7 @@
 #include "PlayerShipController.generated.h"
 
 class AShipPawn;
+class AMothershipPlayerState;
 
 /**
  * Controller for a one-man ship
@@ -24,24 +25,38 @@ protected:
 	virtual void SetPawn(APawn* NewPawn) override;
 	
 	virtual void PawnPendingDestroy(APawn* Pawn) override;
+	virtual void InitPlayerState() override;
 	// End PlayerController interface
 	
 	void OnThrottleInput(float Value);
 	void OnDirectionInput(float Value);
+
+	void OnRespawnPressed();
+
+	// ------------------------------------------------------------------------------------
+	// Server only
+	// ------------------------------------------------------------------------------------
+
+	UFUNCTION(Reliable, Server, WithValidation)
+	virtual void ServerRespawnPlayer();
 
 	// ------------------------------------------------------------------------------------
 	// Client only
 	// ------------------------------------------------------------------------------------
 
 	UFUNCTION(Reliable, Client)
-	void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
+	virtual void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
+
+	// ------------------------------------------------------------------------------------
+	// Properties
+	// ------------------------------------------------------------------------------------
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Owner)
 	AShipPawn* Ship = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Mechanics)
-	float RespawnTime = 5.f;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Mechanics)
+	AMothershipPlayerState* MSPlayerState = nullptr;
 
 private:
-	FTimerHandle RespawnTimerHandle;
+
 };
