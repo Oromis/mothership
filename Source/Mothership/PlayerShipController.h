@@ -37,15 +37,25 @@ protected:
 	// Server only
 	// ------------------------------------------------------------------------------------
 
+	//virtual void ServerRespawnPlayer_Implementation();
 	UFUNCTION(Reliable, Server, WithValidation)
-	virtual void ServerRespawnPlayer();
+	void ServerRespawnPlayer();
+
+	//virtual void ServerSetThrottle_Implementation(float Value);
+	UFUNCTION(Unreliable, Server, WithValidation)
+	void ServerSetThrottle(float Value);
+
+	//virtual void ServerSetDirection_Implementation(float Value);
+	UFUNCTION(Unreliable, Server, WithValidation)
+	void ServerSetDirection(float Value);
 
 	// ------------------------------------------------------------------------------------
 	// Client only
 	// ------------------------------------------------------------------------------------
 
 	UFUNCTION(Reliable, Client)
-	virtual void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
+	void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
+	void ClientSetSpectatorCamera_Implementation(FVector CameraLocation, FRotator CameraRotation);
 
 	// ------------------------------------------------------------------------------------
 	// Properties

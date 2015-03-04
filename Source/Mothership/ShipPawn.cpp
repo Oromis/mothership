@@ -8,6 +8,8 @@
 #include "MothershipGameMode.h"
 
 #include "Engine.h"
+#include "UnrealNetwork.h"
+
 
 
 // Sets default values
@@ -31,6 +33,9 @@ AShipPawn::AShipPawn() :
 	bReplicateMovement = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
+
+	bReplicates = true;
+	this->bReplicateMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +56,21 @@ void AShipPawn::Tick( float DeltaTime )
 	
 	MovementTick(DeltaTime);
 }
+
+//void AShipPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+//{
+//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//	DOREPLIFETIME(AShipPawn, ThrottleControl);
+//	DOREPLIFETIME(AShipPawn, DirectionControl);
+//
+//	/*{
+//		static UProperty* spThrottleControl = GetReplicatedProperty(StaticClass(), AShipPawn::StaticClass(), GET_MEMBER_NAME_CHECKED(AShipPawn, ThrottleControl));
+//		for(int32 i = 0; i < spThrottleControl->ArrayDim; i++)
+//		{								
+//			OutLifetimeProps.AddUnique(FLifetimeProperty(spThrottleControl->RepIndex + i));
+//		}															
+//	}*/
+//}
 
 void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
 	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
