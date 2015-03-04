@@ -72,19 +72,21 @@ void AShipPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLife
 void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
 	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
+	//FVector DeltaVelocity = MyComp->GetComponentVelocity() - OtherComp->GetComponentVelocity();
+
 	Super::ReceiveHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
 	if(Mesh)
 	{
 		// Damage the ship
-		if(Other)
+		if(Other && Role == ROLE_Authority)
 		{
 			float DamageScale = 1.f;
 			if(OtherComp && OtherComp->GetMass() != 0.f && Mesh->GetMass() != 0.f)
 			{
 				DamageScale = OtherComp->GetMass() / Mesh->GetMass();
 			}
-			TakeDamage(FMath::Abs(Speed) / 100.f * DamageScale, 
+			TakeDamage(FMath::Abs(Speed) / 100.f * DamageScale,
 				FDamageEvent(TSubclassOf<UDamageType>(UCrashDamage::StaticClass())), 
 				Other->GetInstigatorController(), 
 				Other);
@@ -100,7 +102,6 @@ void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimit
 float AShipPawn::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	DebugMessage("Taking Damage: " + FString::SanitizeFloat(DamageAmount));
 	if(HealthComponent)
 	{
 		return HealthComponent->TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
