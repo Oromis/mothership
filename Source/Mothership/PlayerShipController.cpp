@@ -3,6 +3,8 @@
 #include "Mothership.h"
 #include "PlayerShipController.h"
 #include "ShipPawn.h"
+#include "MothershipPlayerState.h"
+#include "MothershipGameMode.h"
 
 void APlayerShipController::PlayerTick(float DeltaTime)
 {
@@ -16,6 +18,8 @@ void APlayerShipController::SetupInputComponent()
 
 	InputComponent->BindAxis("Throttle", this, &APlayerShipController::OnThrottleInput);
 	InputComponent->BindAxis("Direction", this, &APlayerShipController::OnDirectionInput);
+
+	InputComponent->BindAction("Respawn", IE_Pressed, this, &APlayerShipController::OnRespawnPressed);
 }
 
 void APlayerShipController::SetPawn(APawn* NewPawn)
@@ -23,6 +27,12 @@ void APlayerShipController::SetPawn(APawn* NewPawn)
 	Super::SetPawn(NewPawn);
 
 	Ship = NewPawn ? Cast<AShipPawn>(NewPawn) : nullptr;
+}
+
+void APlayerShipController::InitPlayerState()
+{
+	Super::InitPlayerState();
+	MSPlayerState = Cast<AMothershipPlayerState>(PlayerState);
 }
 
 void APlayerShipController::OnThrottleInput(float Value)
@@ -39,4 +49,44 @@ void APlayerShipController::OnDirectionInput(float Value)
 	{
 		Ship->SetDirectionControl(Value);
 	}
+}
+
+void APlayerShipController::OnRespawnPressed()
+{
+	if(MSPlayerState)
+	{
+		if(MSPlayerState->PlayerStatus == FPlayerStatus::WATCHING && MSPlayerState->MayRespawn)
+		{
+			ServerRespawnPlayer();
+		}
+	}
+}
+
+void APlayerShipController::PawnPendingDestroy(APawn* Pawn)
+{
+	if(Ship == Pawn)
+	{
+		FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
+		FRotator CameraRotation = PlayerCameraManager->GetCameraRotation();
+
+		Super::PawnPendingDestroy(Pawn);
+
+		ClientSetSpectatorCamera(CameraLocation, CameraRotation);
+	}
+}
+
+void APlayerShipController::ServerRespawnPlayer_Implementation()
+{
+	GetWorld()->GetAuthGameMode<AMothershipGameMode>()->RestartPlayer(this);
+}
+
+bool APlayerShipController::ServerRespawnPlayer_Validate()
+{
+	return true;
+}
+
+void APlayerShipController::ClientSetSpectatorCamera_Implementation(FVector CameraLocation, FRotator CameraRotation)
+{
+	this->SetInitialLocationAndRotation(CameraLocation, CameraRotation);
+	this->SetViewTarget(this);
 }

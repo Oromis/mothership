@@ -3,6 +3,12 @@
 #include "GameFramework/GameMode.h"
 #include "MothershipGameMode.generated.h"
 
+struct FPlayerData
+{
+	FTimerHandle RespawnTimer;
+	AController* Controller;
+};
+
 UCLASS(minimalapi)
 class AMothershipGameMode : public AGameMode
 {
@@ -10,6 +16,16 @@ class AMothershipGameMode : public AGameMode
 
 public:
 	AMothershipGameMode(const FObjectInitializer& ObjectInitializer);
+
+	virtual UClass* GetDefaultPawnClassForController(AController* InController) override;
+	virtual APlayerController* Login(UPlayer* NewPlayer, const FString& Portal, const FString& Options, const TSharedPtr<class FUniqueNetId>& UniqueId, FString& ErrorMessage) override;
+
+	void OnKill(AController* Killer, AController* Victim, APawn* KilledPawn);
+
+	void OnRespawnTimerExpired();
+
+protected:
+	TMap<int32, FPlayerData> PlayerData;
 };
 
 
