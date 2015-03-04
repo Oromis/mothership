@@ -26,6 +26,9 @@ AShipPawn::AShipPawn() :
 	PrimaryActorTick.bCanEverTick = true;
 	SetActorEnableCollision(true);
 
+	bReplicates = true;
+	bReplicateMovement = true;
+
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 }
 
