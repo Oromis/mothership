@@ -7,6 +7,7 @@
 #include "ShipPawn.h"
 
 #include "GameFramework/PlayerState.h"
+#include "GameFramework/HUD.h"
 
 AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -23,6 +24,10 @@ AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitial
 	}
 
 	this->bStartPlayersAsSpectators = true;
+
+	//set the default HUD class
+	static ConstructorHelpers::FClassFinder<AHUD> DefaultHUDClass(TEXT("/Game/Blueprints/HUD/DefaultHUD"));
+	HUDClass = DefaultHUDClass.Class;
 }
 
 UClass* AMothershipGameMode::GetDefaultPawnClassForController(AController* InController)
