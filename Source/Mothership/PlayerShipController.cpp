@@ -39,7 +39,11 @@ void APlayerShipController::OnThrottleInput(float Value)
 {
 	if(Ship)
 	{
-		Ship->SetThrottleControl(Value);
+		if(Ship->GetThrottleControl() != Value)
+		{
+			Ship->SetThrottleControl(Value);
+			ServerSetThrottle(Value);
+		}
 	}
 }
 
@@ -47,7 +51,11 @@ void APlayerShipController::OnDirectionInput(float Value)
 {
 	if(Ship)
 	{
-		Ship->SetDirectionControl(Value);
+		if(Ship->GetDirectionControl() != Value)
+		{
+			Ship->SetDirectionControl(Value);
+			ServerSetDirection(Value);
+		}
 	}
 }
 
@@ -83,6 +91,32 @@ void APlayerShipController::ServerRespawnPlayer_Implementation()
 bool APlayerShipController::ServerRespawnPlayer_Validate()
 {
 	return true;
+}
+
+void APlayerShipController::ServerSetThrottle_Implementation(float Value)
+{
+	if(Ship)
+	{
+		Ship->SetThrottleControl(Value);
+	}
+}
+
+bool APlayerShipController::ServerSetThrottle_Validate(float Value)
+{
+	return -1.f <= Value && Value <= 1.f;
+}
+
+void APlayerShipController::ServerSetDirection_Implementation(float Value)
+{
+	if(Ship)
+	{
+		Ship->SetDirectionControl(Value);
+	}
+}
+
+bool APlayerShipController::ServerSetDirection_Validate(float Value)
+{
+	return -1.f <= Value && Value <= 1.f;
 }
 
 void APlayerShipController::ClientSetSpectatorCamera_Implementation(FVector CameraLocation, FRotator CameraRotation)
