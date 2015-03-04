@@ -30,9 +30,9 @@ public:
 protected:
 	void CheckHealth(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Health)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, Category = Health)
 	float Health = 0.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Health)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, Category = Health)
 	float MaxHealth = 0.f;
 };

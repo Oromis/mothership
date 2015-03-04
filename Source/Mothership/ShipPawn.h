@@ -36,8 +36,12 @@ public:
 	void SetDirectionControl(float Direction);
 	float GetDirectionControl() const;
 
-	/// Called when the ship dies
+	/// [Server] Called when the ship dies
 	virtual void OnDestroy(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDestroy(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+	void MulticastOnDestroy_Implementation(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
 	UPROPERTY(BlueprintAssignable, Category = Mechanics)
 	FOnDestroyDelegate OnDestroyEvent;
@@ -78,12 +82,14 @@ protected:
 	// Status
 	// -------------------------------------------------------------------------------------
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Status)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Replicated, Category = Status)
 	float Speed;
 
 	/// When the ship hits sth or is hit by something, this is set to add some external drift
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Status)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Replicated, Category = Status)
 	FVector DriftVelocity;
+
+	bool IsDying = false;
 
 	// -------------------------------------------------------------------------------------
 	// Controls
@@ -94,7 +100,7 @@ protected:
 	float ThrottleControl;
 
 	/// Steering control. > 0 is right, < 0 is left
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Control)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Replicated, Category = Control)
 	float DirectionControl;
 
 	// -------------------------------------------------------------------------------------

@@ -2,6 +2,9 @@
 #include "HealthComponent.h"
 #include "Destructible.h"
 
+#include "Engine.h"
+#include "UnrealNetwork.h"
+
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
@@ -15,7 +18,13 @@ void UHealthComponent::InitializeComponent()
 	Super::InitializeComponent();
 
 	// ...
-	
+}
+
+void UHealthComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UHealthComponent, Health);
+	DOREPLIFETIME(UHealthComponent, MaxHealth);
 }
 
 float UHealthComponent::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator,

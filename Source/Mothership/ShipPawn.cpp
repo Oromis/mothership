@@ -33,6 +33,7 @@ AShipPawn::AShipPawn() :
 	bReplicateMovement = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
+	HealthComponent->SetIsReplicated(true);
 
 	bReplicates = true;
 	this->bReplicateMovement = true;
@@ -54,23 +55,19 @@ void AShipPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 	
-	MovementTick(DeltaTime);
+	if(!IsDying)
+	{
+		MovementTick(DeltaTime);
+	}
 }
 
-//void AShipPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
-//{
-//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//	DOREPLIFETIME(AShipPawn, ThrottleControl);
-//	DOREPLIFETIME(AShipPawn, DirectionControl);
-//
-//	/*{
-//		static UProperty* spThrottleControl = GetReplicatedProperty(StaticClass(), AShipPawn::StaticClass(), GET_MEMBER_NAME_CHECKED(AShipPawn, ThrottleControl));
-//		for(int32 i = 0; i < spThrottleControl->ArrayDim; i++)
-//		{								
-//			OutLifetimeProps.AddUnique(FLifetimeProperty(spThrottleControl->RepIndex + i));
-//		}															
-//	}*/
-//}
+void AShipPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AShipPawn, DirectionControl);
+	DOREPLIFETIME(AShipPawn, Speed);
+	DOREPLIFETIME(AShipPawn, DriftVelocity);
+}
 
 void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
 	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
@@ -117,19 +114,29 @@ float AShipPawn::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent,
 
 void AShipPawn::OnDestroy(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	MulticastOnDestroy(DamageEvent, EventInstigator, DamageCauser);
+}
+
+void AShipPawn::MulticastOnDestroy_Implementation(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	this->IsDying = true;
+
 	if(OnDestroyEvent.IsBound())
 	{
 		// Call listeners for this event (Probably a blueprint script)
 		OnDestroyEvent.Broadcast(DamageEvent.DamageTypeClass.GetDefaultObject(), EventInstigator, DamageCauser);
 	}
-	else
+	else if(Role == ENetRole::ROLE_Authority)
 	{
 		// No listeners? What a pity, just delete this actor!
 		this->Destroy();
 	}
 
-	// Tell the game about this incident
-	GetWorld()->GetAuthGameMode<AMothershipGameMode>()->OnKill(EventInstigator, this->Controller, this);
+	if(Role == ENetRole::ROLE_Authority)
+	{
+		// Tell the game about this incident
+		GetWorld()->GetAuthGameMode<AMothershipGameMode>()->OnKill(EventInstigator, this->Controller, this);
+	}
 }
 
 void AShipPawn::SetThrottleControl(float Throttle)
