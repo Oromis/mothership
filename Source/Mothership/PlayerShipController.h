@@ -16,7 +16,6 @@ class MOTHERSHIP_API APlayerShipController : public APlayerController
 {
 	GENERATED_BODY()
 	
-	
 protected:
 
 	// Begin PlayerController interface
@@ -63,9 +62,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Owner)
 	AShipPawn* Ship = nullptr;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Mechanics)
-	AMothershipPlayerState* MSPlayerState = nullptr;
 
 private:
 

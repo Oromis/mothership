@@ -67,7 +67,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraArm;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mechanics, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = Mechanics, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent* HealthComponent;
 
 	/// Curve defining the roll behavior by current speed
@@ -96,7 +96,7 @@ protected:
 	// -------------------------------------------------------------------------------------
 
 	/// Forward / Reverse thrust control. > 0 is forward, < 0 is backward.
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Control)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Replicated, Category = Control)
 	float ThrottleControl;
 
 	/// Steering control. > 0 is right, < 0 is left

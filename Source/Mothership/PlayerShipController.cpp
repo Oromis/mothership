@@ -32,7 +32,6 @@ void APlayerShipController::SetPawn(APawn* NewPawn)
 void APlayerShipController::InitPlayerState()
 {
 	Super::InitPlayerState();
-	MSPlayerState = Cast<AMothershipPlayerState>(PlayerState);
 }
 
 void APlayerShipController::OnThrottleInput(float Value)
@@ -61,9 +60,9 @@ void APlayerShipController::OnDirectionInput(float Value)
 
 void APlayerShipController::OnRespawnPressed()
 {
-	if(MSPlayerState)
+	if(AMothershipPlayerState* State = Cast<AMothershipPlayerState>(PlayerState))
 	{
-		if(MSPlayerState->PlayerStatus == FPlayerStatus::WATCHING && MSPlayerState->MayRespawn)
+		if(State->PlayerStatus == FPlayerStatus::WATCHING && State->MayRespawn)
 		{
 			ServerRespawnPlayer();
 		}

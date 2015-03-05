@@ -90,3 +90,15 @@ void AMothershipGameMode::OnRespawnTimerExpired()
 		}
 	}
 }
+
+void AMothershipGameMode::RestartPlayer(AController* Player)
+{
+	if(AMothershipPlayerState* PlayerState = Cast<AMothershipPlayerState>(Player->PlayerState))
+	{
+		if(PlayerState->MayRespawn)
+		{
+			PlayerState->MayRespawn = false;
+			Super::RestartPlayer(Player);
+		}
+	}
+}
