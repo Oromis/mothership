@@ -24,6 +24,9 @@ public:
 
 	void OnRespawnTimerExpired();
 
+	/// Respawns a player
+	virtual void RestartPlayer(AController* NewPlayer);
+
 protected:
 	TMap<int32, FPlayerData> PlayerData;
 };

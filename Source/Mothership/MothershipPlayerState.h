@@ -25,23 +25,23 @@ public:
 	float GetRespawnTime();
 	void SetRespawnTime(float Time);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Mechanics)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Replicated, Category = Mechanics)
 	TSubclassOf<APawn> SelectedPawn;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Mechanics)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Replicated, Category = Mechanics)
 	bool MayRespawn = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mechanics)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, Category = Mechanics)
 	FPlayerStatus PlayerStatus;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Score)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, Category = Score)
 	int32 Kills;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Score)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, Category = Score)
 	int32 Deaths;
 
 protected:
 	/// Minimum Time until respawn in seconds
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Mechanics)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Replicated, Category = Mechanics)
 	float RespawnTime = 5.f;
 };

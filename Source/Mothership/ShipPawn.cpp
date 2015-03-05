@@ -10,7 +10,10 @@
 #include "Engine.h"
 #include "UnrealNetwork.h"
 
-
+namespace
+{
+	const float CRASH_DAMAGE_SCALE = 0.01f;
+}
 
 // Sets default values
 AShipPawn::AShipPawn() :
@@ -36,7 +39,8 @@ AShipPawn::AShipPawn() :
 	HealthComponent->SetIsReplicated(true);
 
 	bReplicates = true;
-	this->bReplicateMovement = true;
+	bReplicateMovement = true; 
+	NetCullDistanceSquared = 10000000000.f;		///< Visible up to 1000m away (seems to be sufficient)
 }
 
 // Called when the game starts or when spawned
@@ -64,9 +68,11 @@ void AShipPawn::Tick( float DeltaTime )
 void AShipPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AShipPawn, ThrottleControl);
 	DOREPLIFETIME(AShipPawn, DirectionControl);
 	DOREPLIFETIME(AShipPawn, Speed);
 	DOREPLIFETIME(AShipPawn, DriftVelocity);
+	DOREPLIFETIME(AShipPawn, HealthComponent);
 }
 
 void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
@@ -82,11 +88,28 @@ void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimit
 		if(Other && Role == ROLE_Authority)
 		{
 			float DamageScale = 1.f;
-			if(OtherComp && OtherComp->GetMass() != 0.f && Mesh->GetMass() != 0.f)
+			float MeshMass = Mesh->GetMass();
+
+			// More damage for the lighter body, less for the heavier one
+			if(OtherComp && OtherComp->GetMass() != 0.f && MeshMass != 0.f)
 			{
-				DamageScale = OtherComp->GetMass() / Mesh->GetMass();
+				DamageScale = OtherComp->GetMass() / MeshMass;
 			}
-			TakeDamage(FMath::Abs(Speed) / 100.f * DamageScale,
+
+			// Base Damage depends on the relative speed
+			float BaseDamage;
+			if(MeshMass)
+			{
+				// We have an Impulse. Impulse is Force over time [N*s] = [kg * m / s],
+				// Therefore difference of speed is Imp / Mass [kg * m / s / kg] = [m / s].
+				BaseDamage = NormalImpulse.Size() / MeshMass;
+			}
+			else
+			{
+				BaseDamage = FMath::Abs(Speed);	// Fallback in case this ship has no mass (WTF?)
+			}
+
+			TakeDamage(BaseDamage * CRASH_DAMAGE_SCALE * DamageScale,
 				FDamageEvent(TSubclassOf<UDamageType>(UCrashDamage::StaticClass())), 
 				Other->GetInstigatorController(), 
 				Other);
@@ -102,8 +125,9 @@ void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimit
 float AShipPawn::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	if(HealthComponent)
+	if(HealthComponent && Role == ROLE_Authority)
 	{
+		// Only server may damage sth
 		return HealthComponent->TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	}
 	else
