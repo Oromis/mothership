@@ -23,7 +23,7 @@ AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitial
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	this->bStartPlayersAsSpectators = true;
+	this->bStartPlayersAsSpectators = false;
 
 	//set the default HUD class
 	static ConstructorHelpers::FClassFinder<AHUD> DefaultHUDClass(TEXT("/Game/Blueprints/HUD/DefaultHUD"));
