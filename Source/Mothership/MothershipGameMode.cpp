@@ -8,6 +8,11 @@
 
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/HUD.h"
+#include "GameFramework/PlayerStart.h"
+
+#include "Engine.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogMotherShipGameMode, Log, All);
 
 AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -24,6 +29,9 @@ AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitial
 	}
 
 	this->bStartPlayersAsSpectators = false;
+	
+	//We won't be ticked by default  
+	PrimaryActorTick.bCanEverTick = true; 
 
 	//set the default HUD class
 	static ConstructorHelpers::FClassFinder<AHUD> DefaultHUDClass(TEXT("/Game/Blueprints/HUD/DefaultHUD"));
@@ -100,5 +108,70 @@ void AMothershipGameMode::RestartPlayer(AController* Player)
 			PlayerState->MayRespawn = false;
 			Super::RestartPlayer(Player);
 		}
+	}
+}
+
+AActor* AMothershipGameMode::ChoosePlayerStart(AController* Player)
+{
+	// Choose a player start
+	APlayerStart* FoundPlayerStart = NULL;
+	APawn* PawnToFit = DefaultPawnClass ? DefaultPawnClass->GetDefaultObject<APawn>() : NULL;
+	TArray<APlayerStart*> UnOccupiedStartPoints;
+	TArray<APlayerStart*> OccupiedStartPoints;
+	for (int32 PlayerStartIndex = 0; PlayerStartIndex < PlayerStarts.Num(); ++PlayerStartIndex)
+	{
+		APlayerStart* PlayerStart = PlayerStarts[PlayerStartIndex];
+
+		if (Cast<APlayerStartPIE>(PlayerStart) != NULL)
+		{
+			// Always prefer the first "Play from Here" PlayerStart, if we find one while in PIE mode
+			FoundPlayerStart = PlayerStart;
+			break;
+		}
+		else if (PlayerStart != NULL)
+		{
+			FVector ActorLocation = PlayerStart->GetActorLocation();
+			const FRotator ActorRotation = PlayerStart->GetActorRotation();
+			if (!GetWorld()->EncroachingBlockingGeometry(PawnToFit, ActorLocation, ActorRotation))
+			{
+				if (!UsedPlayerStarts.Contains(PlayerStart))
+				{
+					UnOccupiedStartPoints.Add(PlayerStart);
+				}
+			}
+			else if (GetWorld()->FindTeleportSpot(PawnToFit, ActorLocation, ActorRotation))
+			{
+				OccupiedStartPoints.Add(PlayerStart);
+			}
+		}
+	}
+	if (FoundPlayerStart == NULL)
+	{
+		if (UnOccupiedStartPoints.Num() > 0)
+		{
+			FoundPlayerStart = UnOccupiedStartPoints[FMath::RandRange(0, UnOccupiedStartPoints.Num() - 1)];
+		}
+		else if (OccupiedStartPoints.Num() > 0)
+		{
+			FoundPlayerStart = OccupiedStartPoints[FMath::RandRange(0, OccupiedStartPoints.Num() - 1)];
+		}
+	}
+
+	// remember the player starts we already used in this tick 
+	// so no two ships spawn at the same location (in one tick)
+	this->UsedPlayerStarts.Add(FoundPlayerStart);
+	UE_LOG(LogMotherShipGameMode, Warning, TEXT("Found a spawnpoint"));
+	SpawnedPlayers = true;
+
+	return FoundPlayerStart;
+}
+
+void AMothershipGameMode::Tick(float DeltaSeconds)
+{
+	// we can clear the spawns we used in the last tick if we used some
+	if (this->SpawnedPlayers) 
+	{
+		this->UsedPlayerStarts.Empty();
+		SpawnedPlayers = false;
 	}
 }

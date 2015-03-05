@@ -27,8 +27,15 @@ public:
 	/// Respawns a player
 	virtual void RestartPlayer(AController* NewPlayer);
 
+	/// select best spawn point for player
+	virtual AActor* ChoosePlayerStart(AController* Player) override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
 protected:
 	TMap<int32, FPlayerData> PlayerData;
+	bool SpawnedPlayers;
+	TArray<APlayerStart*> UsedPlayerStarts;
 };
 
 
