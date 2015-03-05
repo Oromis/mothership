@@ -9,6 +9,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDestroyDelegate, UDamageType*, DamageType, AController*, DamageInstigator, AActor*, DamageCauser);
 
 class UHealthComponent;
+class UWeaponComponent;
 
 UCLASS()
 class MOTHERSHIP_API AShipPawn : public APawn, public IDestructible
@@ -46,11 +47,14 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = Mechanics)
 	FOnDestroyDelegate OnDestroyEvent;
 
+	virtual void SetFiring(bool Firing);
+
 protected:
 
 	void MovementTick(float DeltaSeconds);
 	void RotationTick(float DeltaSeconds);
 	void StabilizerTick(float DeltaSeconds);
+	void WeaponsTick(float DeltaSeconds);
 
 	float DampenFloat(float Value, float Force);
 
@@ -91,6 +95,9 @@ protected:
 
 	bool IsDying = false;
 
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Weapons)
+	bool Firing = false;
+
 	// -------------------------------------------------------------------------------------
 	// Controls
 	// -------------------------------------------------------------------------------------
@@ -102,6 +109,13 @@ protected:
 	/// Steering control. > 0 is right, < 0 is left
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Replicated, Category = Control)
 	float DirectionControl;
+
+	// -------------------------------------------------------------------------------------
+	// Guns (yay, finally the interestimg part!)
+	// -------------------------------------------------------------------------------------
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Weapons)
+	TArray<UWeaponComponent*> PrimaryWeapons;
 
 	// -------------------------------------------------------------------------------------
 	// Ship Attributes

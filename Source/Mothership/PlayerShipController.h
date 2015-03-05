@@ -30,6 +30,9 @@ protected:
 	void OnThrottleInput(float Value);
 	void OnDirectionInput(float Value);
 
+	void OnFirePressed();
+	void OnFireReleased();
+
 	void OnRespawnPressed();
 
 	// ------------------------------------------------------------------------------------
@@ -62,7 +65,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Owner)
 	AShipPawn* Ship = nullptr;
-
-private:
-
 };

@@ -6,6 +6,7 @@
 #include "DamageType/CrashDamage.h"
 #include "Helper/Utilities.h"
 #include "MothershipGameMode.h"
+#include "Weapons/WeaponComponent.h"
 
 #include "Engine.h"
 #include "UnrealNetwork.h"
@@ -52,6 +53,12 @@ void AShipPawn::BeginPlay()
 	{
 		CameraArm->bAbsoluteRotation = true;
 	}
+
+	PrimaryWeapons.Empty();
+	for(auto cur : this->GetComponentsByClass(UWeaponComponent::StaticClass()))
+	{
+		PrimaryWeapons.Add(Cast<UWeaponComponent>(cur));
+	}
 }
 
 // Called every frame
@@ -62,6 +69,7 @@ void AShipPawn::Tick( float DeltaTime )
 	if(!IsDying)
 	{
 		MovementTick(DeltaTime);
+		WeaponsTick(DeltaTime);
 	}
 }
 
@@ -184,6 +192,11 @@ inline float AShipPawn::GetDirectionControl() const
 	return DirectionControl;
 }
 
+inline void AShipPawn::SetFiring(bool Firing)
+{
+	this->Firing = Firing;
+}
+
 void AShipPawn::MovementTick(float DeltaSeconds)
 {
 	// The Mesh component controls the physical direction of Travel
@@ -303,6 +316,17 @@ void AShipPawn::StabilizerTick(float DeltaSeconds)
 	FVector Location = Mesh->GetRelativeTransform().GetLocation();
 	Location.Z = 0.f;
 	Mesh->SetRelativeLocation(Location);
+}
+
+void AShipPawn::WeaponsTick(float DeltaSeconds)
+{
+	if(Firing)
+	{
+		for(auto Weapon : PrimaryWeapons)
+		{
+			Weapon->Fire();
+		}
+	}
 }
 
 FORCEINLINE float AShipPawn::DampenFloat(float Value, float Force)

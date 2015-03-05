@@ -19,6 +19,9 @@ void APlayerShipController::SetupInputComponent()
 	InputComponent->BindAxis("Throttle", this, &APlayerShipController::OnThrottleInput);
 	InputComponent->BindAxis("Direction", this, &APlayerShipController::OnDirectionInput);
 
+	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerShipController::OnFirePressed);
+	InputComponent->BindAction("Fire", IE_Released, this, &APlayerShipController::OnFireReleased);
+
 	InputComponent->BindAction("Respawn", IE_Pressed, this, &APlayerShipController::OnRespawnPressed);
 }
 
@@ -55,6 +58,22 @@ void APlayerShipController::OnDirectionInput(float Value)
 			Ship->SetDirectionControl(Value);
 			ServerSetDirection(Value);
 		}
+	}
+}
+
+void APlayerShipController::OnFirePressed()
+{
+	if(Ship)
+	{
+		Ship->SetFiring(true);
+	}
+}
+
+void APlayerShipController::OnFireReleased()
+{
+	if(Ship)
+	{
+		Ship->SetFiring(false);
 	}
 }
 
