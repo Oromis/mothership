@@ -7,6 +7,7 @@
 #include "Helper/Utilities.h"
 #include "MothershipGameMode.h"
 #include "Weapons/WeaponComponent.h"
+#include "Weapons/Projectile.h"
 
 #include "Engine.h"
 #include "UnrealNetwork.h"
@@ -86,12 +87,13 @@ void AShipPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLife
 void AShipPawn::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
 	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
-	//FVector DeltaVelocity = MyComp->GetComponentVelocity() - OtherComp->GetComponentVelocity();
-
 	Super::ReceiveHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
 	if(Mesh)
 	{
+		if(!CanBeHitBy(Other))
+			return;
+
 		// Damage the ship
 		if(Other && Role == ROLE_Authority)
 		{
@@ -333,4 +335,9 @@ FORCEINLINE float AShipPawn::DampenFloat(float Value, float Force)
 {
 	float Delta = FMath::Min(Force, FMath::Abs(Value));
 	return Value - FMath::Sign(Value) * Delta;
+}
+
+bool AShipPawn::CanBeHitBy(AActor* Other)
+{
+	return Cast<AProjectile>(Other) == nullptr;
 }
