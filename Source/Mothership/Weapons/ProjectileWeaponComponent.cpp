@@ -9,6 +9,11 @@
 
 UProjectileWeaponComponent::UProjectileWeaponComponent()
 {
+	bWantsInitializeComponent = true;
+}
+
+void UProjectileWeaponComponent::InitializeComponent()
+{
 	
 }
 
@@ -21,11 +26,12 @@ void UProjectileWeaponComponent::ServerFire_Implementation()
 			if(*ProjectileClass)
 			{
 				FActorSpawnParameters SpawnParams;
-				if(APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+				AActor* Owner = GetOwner();
+				if(APawn* OwnerPawn = Cast<APawn>(Owner))
 				{
 					SpawnParams.Instigator = OwnerPawn;
 				}
-				SpawnParams.Owner = GetOwner();
+				SpawnParams.Owner = Owner;
 
 				AProjectile* Projectile = World->SpawnActor<AProjectile>(ProjectileClass, 
 					this->GetComponentLocation(), 

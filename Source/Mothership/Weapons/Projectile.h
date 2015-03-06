@@ -18,12 +18,17 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(NetMulticast, Unreliable)
 	void SetInitialVelocity(float InitialVelocity);
+	void SetInitialVelocity_Implementation(float InitialVelocity);
+
+	virtual void ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
+		bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit) override;
 
 protected:
 	/// The component with the collision shape. Could be a mesh or a sphere or a capsule
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Physical)
-	USceneComponent* PhysicalRepresentation;
+	UPrimitiveComponent* PhysicalRepresentation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Physical)
 	UProjectileMovementComponent* ProjectileMovement;

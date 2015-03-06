@@ -15,7 +15,9 @@ class MOTHERSHIP_API UProjectileWeaponComponent : public UWeaponComponent
 public:
 	UProjectileWeaponComponent();
 
-	virtual void ServerFire_Implementation();
+	virtual void InitializeComponent() override;
+
+	virtual void ServerFire_Implementation() override;
 
 protected:
 
