@@ -168,6 +168,8 @@ AActor* AMothershipGameMode::ChoosePlayerStart(AController* Player)
 
 void AMothershipGameMode::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
 	// we can clear the spawns we used in the last tick if we used some
 	if (this->SpawnedPlayers) 
 	{
