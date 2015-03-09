@@ -33,21 +33,6 @@ void UProjectileWeaponComponent::ServerFire_Implementation()
 				}
 				SpawnParams.Owner = Owner;
 
-				//FTransform Transform(GetComponentRotation(), GetComponentLocation());
-				//AProjectile* Projectile = Cast<AProjectile>(UGameplayStatics::BeginSpawningActorFromClass(this, ProjectileClass, Transform, true));
-				//
-				//if(UPrimitiveComponent* Comp = Projectile->GetPhysicalRepresentation())
-				//{
-				//	// Ignore owner of projectile
-				//	Comp->IgnoreActorWhenMoving(Owner, true);
-				//}
-
-				//if(UPrimitiveComponent* Root = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
-				//{
-				//	// Owner should ignore projectile
-				//	Root->IgnoreActorWhenMoving(Projectile, true);
-				//}
-				
 				AProjectile* Projectile = World->SpawnActor<AProjectile>(ProjectileClass, 
 					this->GetComponentLocation(),
 					this->GetComponentRotation(),
@@ -56,8 +41,6 @@ void UProjectileWeaponComponent::ServerFire_Implementation()
 				{
 					Projectile->SetInitialVelocity(InitialProjectileSpeed);
 				}
-
-				//UGameplayStatics::FinishSpawningActor(Projectile, Transform);
 			}
 		}
 		Super::ServerFire_Implementation();
