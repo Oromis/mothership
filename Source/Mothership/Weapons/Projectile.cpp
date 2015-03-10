@@ -38,54 +38,8 @@ void AProjectile::BeginPlay()
 	if(PhysicalRepresentation)
 	{
 		ProjectileMovement->SetUpdatedComponent(PhysicalRepresentation);
-		PhysicalRepresentation->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndOverlap);
-		//if(AActor* Owner = GetOwner()) 
-		//{
-		//	if(UWorld* World = GetWorld())
-		//	{
-		//		TArray<FOverlapResult> Overlaps;
-		//		FComponentQueryParams QueryParams;
-		//		QueryParams.AddIgnoredActor(this);
-		//		QueryParams.bFindInitialOverlaps = true;
-		//		FCollisionObjectQueryParams CollisionParams;
-		//		
-		//		World->ComponentOverlapMulti(Overlaps,
-		//			PhysicalRepresentation,
-		//			PhysicalRepresentation->GetComponentLocation(),
-		//			PhysicalRepresentation->GetComponentRotation(),
-		//			QueryParams);
-
-		//		bool OverlapsOwner = false;
-		//		for(auto& Overlap : Overlaps)
-		//		{
-		//			if(Overlap.Actor.Get() == Owner)
-		//			{
-		//				// Overlaps with owner -> Enable Collision as soon as this is no longer true
-		//				OverlapsOwner = true;
-		//				break;
-		//			}
-		//		}
-
-		//		if(OverlapsOwner)
-		//		{
-		//			PhysicalRepresentation->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndOverlap);
-		//		}
-		//		else
-		//		{
-		//			EnableCollision();
-		//		}
-		//	}
-		//}
 	}
 
-}
-
-void AProjectile::OnEndOverlap(AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if(GetOwner() == OtherActor)
-	{
-		EnableCollision();
-	}
 }
 
 

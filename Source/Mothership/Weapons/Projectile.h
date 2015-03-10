@@ -27,12 +27,6 @@ public:
 
 	UPrimitiveComponent* GetPhysicalRepresentation();
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void EnableCollision();
-
-	UFUNCTION()
-	void OnEndOverlap(AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 protected:
 	/// The component with the collision shape. Could be a mesh or a sphere or a capsule
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Physical)
