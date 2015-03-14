@@ -155,8 +155,11 @@ void AShipPawn::OnDestroy(const FDamageEvent& DamageEvent, AController* EventIns
 void AShipPawn::MulticastOnDestroy_Implementation(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	this->IsDying = true;
-	this->Mesh->SetPhysicsAngularVelocity(FVector::ZeroVector);
-	this->Mesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	if(Mesh)
+	{
+		this->Mesh->SetPhysicsAngularVelocity(FVector::ZeroVector);
+		this->Mesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	}
 
 	if(OnDestroyEvent.IsBound())
 	{

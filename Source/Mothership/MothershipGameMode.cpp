@@ -21,7 +21,8 @@ AMothershipGameMode::AMothershipGameMode(const FObjectInitializer& ObjectInitial
 	PlayerStateClass = AMothershipPlayerState::StaticClass();
 
 	// set default pawn class to the blueprinted ship
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Ships/DefaultShip/DefaultShip"));
+	//static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Ships/DefaultShip/DefaultShip"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Ships/Scorpion/Scorpion"));
 	//static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDown/Blueprints/TopDownCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
