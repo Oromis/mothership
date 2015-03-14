@@ -3,9 +3,11 @@
 #include "Mothership.h"
 #include "Projectile.h"
 #include "../Helper/Utilities.h"
+#include "../HealthComponent.h"
 
 #include "Engine.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "UnrealNetwork.h"
 
 
 // Sets default values
@@ -14,14 +16,9 @@ AProjectile::AProjectile()
  	// Set this actor to call Tick() every frame.
 	PrimaryActorTick.bCanEverTick = false;
 
-	//PhysicalRepresentation = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
-	//PhysicalRepresentation->SetCollisionProfileName(TEXT("BlockAll"));
-	//RootComponent = PhysicalRepresentation;
-
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->MaxSpeed = 1000000.f;
-	//ProjectileMovement->SetUpdatedComponent(PhysicalRepresentation);
 	
 	InitialLifeSpan = 3.f;
 
@@ -39,20 +36,18 @@ void AProjectile::BeginPlay()
 	{
 		ProjectileMovement->SetUpdatedComponent(PhysicalRepresentation);
 	}
-
-}
-
-
-void AProjectile::SetInitialVelocity_Implementation(float InitialVelocity)
-{
-	ProjectileMovement->InitialSpeed = InitialVelocity;
-	ProjectileMovement->Velocity = ProjectileMovement->Velocity.GetUnsafeNormal() * InitialVelocity;
 }
 
 void AProjectile::ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
 	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	Super::ReceiveHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	// Okay, target reached (Hopefully...)!
+	if(Other && Role == ROLE_Authority)
+	{
+		Other->TakeDamage(DamageAmount, FDamageEvent(DamageType), this->GetInstigatorController(), this);
+	}
 
 	this->Destroy();
 }

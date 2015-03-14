@@ -22,8 +22,5 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Projectile)
-	TSubclassOf<AProjectile> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	float InitialProjectileSpeed = 10000.f;
+	TSubclassOf<AActor> ProjectileClass;
 };

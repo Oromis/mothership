@@ -5,6 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHitDelegate, FVector, HitLocation);
+
 class UProjectileMovementComponent;
 
 UCLASS()
@@ -18,14 +20,16 @@ public:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void SetInitialVelocity(float InitialVelocity);
-	void SetInitialVelocity_Implementation(float InitialVelocity);
-
 	virtual void ReceiveHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp,
 		bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit) override;
 
 	UPrimitiveComponent* GetPhysicalRepresentation();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Damage)
+	float DamageAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Damage)
+	TSubclassOf<UDamageType> DamageType;
 
 protected:
 	/// The component with the collision shape. Could be a mesh or a sphere or a capsule

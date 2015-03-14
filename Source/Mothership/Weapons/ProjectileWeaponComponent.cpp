@@ -33,14 +33,10 @@ void UProjectileWeaponComponent::ServerFire_Implementation()
 				}
 				SpawnParams.Owner = Owner;
 
-				AProjectile* Projectile = World->SpawnActor<AProjectile>(ProjectileClass, 
+				AActor* Projectile = World->SpawnActor<AActor>(ProjectileClass,
 					this->GetComponentLocation(),
 					this->GetComponentRotation(),
 					SpawnParams);
-				if(Projectile)
-				{
-					Projectile->SetInitialVelocity(InitialProjectileSpeed);
-				}
 			}
 		}
 		Super::ServerFire_Implementation();

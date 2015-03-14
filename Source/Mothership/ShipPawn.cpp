@@ -155,11 +155,19 @@ void AShipPawn::OnDestroy(const FDamageEvent& DamageEvent, AController* EventIns
 void AShipPawn::MulticastOnDestroy_Implementation(const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	this->IsDying = true;
+	this->Mesh->SetPhysicsAngularVelocity(FVector::ZeroVector);
+	this->Mesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
 	if(OnDestroyEvent.IsBound())
 	{
 		// Call listeners for this event (Probably a blueprint script)
 		OnDestroyEvent.Broadcast(DamageEvent.DamageTypeClass.GetDefaultObject(), EventInstigator, DamageCauser);
+
+		// Ship should no longer block other objects
+		if(Mesh)
+		{
+			Mesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		}
 	}
 	else if(Role == ENetRole::ROLE_Authority)
 	{
