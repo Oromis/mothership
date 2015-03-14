@@ -29,11 +29,11 @@ public:
 	/// Returns the time in seconds until the weapon can fire its next shot. A value <= 0 means it can fire right now.
 	virtual float GetTimeUntilNextShot();
 
-protected:
-
 	/// Number of shots per second
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapons)
 	float RateOfFire = 1.f;
+
+protected:
 
 	/// Gametime when the last shot was fired
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = Weapons)

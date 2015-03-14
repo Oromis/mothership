@@ -11,6 +11,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDestroyDelegate, UDamageType*,
 class UHealthComponent;
 class UWeaponComponent;
 
+UENUM(BlueprintType)
+enum class EWeaponDistribution : uint8
+{
+	SIMULTAINEOUS,
+	DISTRIBUTED,
+};
+
 UCLASS()
 class MOTHERSHIP_API AShipPawn : public APawn, public IDestructible
 {
@@ -100,6 +107,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Weapons)
 	bool Firing = false;
 
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Weapons)
+	float TimeNextShot = 0.f;
+
+	/// Index of the weapon that should shoot next
+	int32 NextShotWeaponIndex = 0;
+
 	// -------------------------------------------------------------------------------------
 	// Controls
 	// -------------------------------------------------------------------------------------
@@ -118,6 +131,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Weapons)
 	TArray<UWeaponComponent*> PrimaryWeapons;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Weapons)
+	EWeaponDistribution WeaponDistribution = EWeaponDistribution::SIMULTAINEOUS;
 
 	// -------------------------------------------------------------------------------------
 	// Ship Attributes

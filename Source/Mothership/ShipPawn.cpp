@@ -335,10 +335,34 @@ void AShipPawn::WeaponsTick(float DeltaSeconds)
 {
 	if(Firing)
 	{
-		for(auto Weapon : PrimaryWeapons)
+		switch(WeaponDistribution)
 		{
-			Weapon->Fire();
+			case EWeaponDistribution::SIMULTAINEOUS:
+				// No-brain mode: fire as soon as ready
+				for(auto Weapon : PrimaryWeapons)
+				{
+					Weapon->Fire();
+				}
+				break;
+
+			case EWeaponDistribution::DISTRIBUTED:
+			{
+				// Mix up the shot times
+				if(UWorld* World = GetWorld())
+				{
+					float CurTime = GetWorld()->GetTimeSeconds();
+					if(CurTime >= TimeNextShot)
+					{
+						auto Weapon = PrimaryWeapons[NextShotWeaponIndex];
+						Weapon->Fire();
+						TimeNextShot = CurTime + (1.f / Weapon->RateOfFire / PrimaryWeapons.Num());
+						NextShotWeaponIndex = (NextShotWeaponIndex + 1) % PrimaryWeapons.Num();
+					}
+				}
+				break;
+			}
 		}
+
 	}
 }
 
